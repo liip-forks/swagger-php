@@ -1,10 +1,6 @@
 {
   "name": "zircote/swagger-php",
   "type": "library",
-  "license": "Apache-2.0",
-  "bin": [
-    "bin/openapi"
-  ],
   "description": "swagger-php - Generate interactive documentation for your RESTful API using phpdoc annotations",
   "keywords": [
     "json",
@@ -13,6 +9,7 @@
     "service discovery"
   ],
   "homepage": "https://github.com/zircote/swagger-php/",
+  "license": "Apache-2.0",
   "authors": [
     {
       "name": "Robert Allen",
@@ -29,12 +26,6 @@
       "homepage": "https://radebatz.net"
     }
   ],
-  "config": {
-    "bin-dir": "bin",
-    "optimize-autoloader": true,
-    "sort-packages": true
-  },
-  "minimum-stability": "stable",
   "require": {
     "php": ">=7.2",
     "ext-json": "*",
@@ -42,6 +33,19 @@
     "psr/log": "^1.1",
     "symfony/finder": ">=2.2",
     "symfony/yaml": ">=3.3"
+  },
+  "require-dev": {
+    "composer/package-versions-deprecated": "1.11.99.2",
+    "friendsofphp/php-cs-fixer": "^2.17 || ^3.0",
+    "phpunit/phpunit": ">=8"
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true
+    },
+    "bin-dir": "bin",
+    "optimize-autoloader": true,
+    "sort-packages": true
   },
   "autoload": {
     "psr-4": {
@@ -51,35 +55,34 @@
       "src/functions.php"
     ]
   },
-  "require-dev": {
-    "composer/package-versions-deprecated": "1.11.99.2",
-    "friendsofphp/php-cs-fixer": "^2.17 || ^3.0",
-    "phpunit/phpunit": ">=8"
-  },
   "autoload-dev": {
     "psr-4": {
       "OpenApi\\Tests\\": "tests/",
       "AnotherNamespace\\": "tests/Fixtures/AnotherNamespace"
     }
   },
+  "minimum-stability": "stable",
+  "bin": [
+    "bin/openapi"
+  ],
   "scripts": {
-    "cs": "php-cs-fixer fix --allow-risky=yes",
-    "lint": "@cs --dry-run",
-    "test": [
-      "phpunit",
-      "@lint"
-    ],
-    "phpstan": "phpstan analyze --level=3 src | grep -v 'does not accept default value of type string'",
-    "psalm": "psalm",
     "analyse": [
       "@phpstan",
       "@psalm"
     ],
+    "cs": "php-cs-fixer fix --allow-risky=yes",
+    "deploy_docs": "./docs/node_modules/.bin/vuepress build docs/ && cp -r .git docs/.vuepress/dist/.git && cd docs/.vuepress/dist/ && git symbolic-ref HEAD refs/heads/gh-pages && git add --all",
+    "docs": "./docs/node_modules/.bin/vuepress dev docs/",
+    "lint": "@cs --dry-run",
+    "phpstan": "phpstan analyze --level=3 src | grep -v 'does not accept default value of type string'",
+    "psalm": "psalm",
+    "test": [
+      "phpunit",
+      "@lint"
+    ],
     "validate-examples": {
       "spectral": "for ff in `find Examples -name *.yaml`; do spectral lint $ff; done",
       "swagger-cli": "for ff in `find Examples -name *.yaml`; do swagger-cli validate $ff; done"
-    },
-    "docs": "./docs/node_modules/.bin/vuepress dev docs/",
-    "deploy_docs": "./docs/node_modules/.bin/vuepress build docs/ && cp -r .git docs/.vuepress/dist/.git && cd docs/.vuepress/dist/ && git symbolic-ref HEAD refs/heads/gh-pages && git add --all"
+    }
   }
 }
